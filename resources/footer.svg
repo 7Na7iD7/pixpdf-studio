@@ -1,0 +1,37 @@
+<svg width="1100" height="200" viewBox="0 0 1100 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradF" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0A0A0F"/>
+      <stop offset="50%" stop-color="#12081F"/>
+      <stop offset="100%" stop-color="#0A0A0F"/>
+    </linearGradient>
+    <linearGradient id="textGradF" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FF00E5"/>
+      <stop offset="50%" stop-color="#B026FF"/>
+      <stop offset="100%" stop-color="#00F0FF"/>
+    </linearGradient>
+    <linearGradient id="waveGradF1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FF00E5" stop-opacity="0.12"/>
+      <stop offset="50%" stop-color="#B026FF" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#00F0FF" stop-opacity="0.12"/>
+    </linearGradient>
+    <filter id="softGlowF" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1100" height="200" fill="url(#bgGradF)"/>
+  <path d="M0,40 C260,10 480,70 700,35 C900,5 1000,55 1100,30 L1100,0 L0,0 Z" fill="url(#waveGradF1)"/>
+
+  <g filter="url(#softGlowF)">
+    <text x="550" y="100" font-family="Segoe UI, Arial, sans-serif" font-size="36" font-weight="800" fill="url(#textGradF)" text-anchor="middle">BUILT WITH PRECISION</text>
+  </g>
+  <text x="550" y="100" font-family="Segoe UI, Arial, sans-serif" font-size="36" font-weight="800" fill="url(#textGradF)" text-anchor="middle">BUILT WITH PRECISION</text>
+
+  <text x="550" y="135" font-family="JetBrains Mono, monospace" font-size="16" letter-spacing="2" fill="#B7B8C4" text-anchor="middle">Compress. Design. Encrypt. Ship.</text>
+
+  <line x1="380" y1="155" x2="720" y2="155" stroke="#B026FF" stroke-opacity="0.4" stroke-width="1"/>
+</svg>

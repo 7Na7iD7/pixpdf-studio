@@ -1,0 +1,61 @@
+<svg width="1100" height="300" viewBox="0 0 1100 300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0A0A0F"/>
+      <stop offset="50%" stop-color="#12081F"/>
+      <stop offset="100%" stop-color="#0A0A0F"/>
+    </linearGradient>
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00F0FF"/>
+      <stop offset="50%" stop-color="#B026FF"/>
+      <stop offset="100%" stop-color="#FF00E5"/>
+    </linearGradient>
+    <linearGradient id="waveGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00F0FF" stop-opacity="0.15"/>
+      <stop offset="50%" stop-color="#B026FF" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#FF00E5" stop-opacity="0.15"/>
+    </linearGradient>
+    <linearGradient id="waveGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FF00E5" stop-opacity="0.12"/>
+      <stop offset="50%" stop-color="#00F0FF" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#B026FF" stop-opacity="0.12"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="14" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1100" height="300" fill="url(#bgGrad)"/>
+
+  <path d="M0,220 C220,180 420,260 650,210 C850,170 980,230 1100,190 L1100,300 L0,300 Z" fill="url(#waveGrad1)"/>
+  <path d="M0,250 C260,290 480,200 700,240 C900,275 1000,210 1100,240 L1100,300 L0,300 Z" fill="url(#waveGrad2)"/>
+
+  <line x1="0" y1="40" x2="1100" y2="40" stroke="#00F0FF" stroke-opacity="0.25" stroke-width="1"/>
+  <line x1="0" y1="260" x2="1100" y2="260" stroke="#FF00E5" stroke-opacity="0.25" stroke-width="1"/>
+
+  <circle cx="70" cy="45" r="3" fill="#39FF14"/>
+  <circle cx="90" cy="45" r="3" fill="#00F0FF"/>
+  <circle cx="110" cy="45" r="3" fill="#FF00E5"/>
+  <text x="1030" y="50" font-family="JetBrains Mono, monospace" font-size="13" fill="#5A5B6A" text-anchor="end">v1.0.0</text>
+
+  <g filter="url(#softGlow)">
+    <text x="550" y="150" font-family="Segoe UI, Arial, sans-serif" font-size="72" font-weight="800" fill="url(#textGrad)" text-anchor="middle">PIXPDF STUDIO</text>
+  </g>
+  <text x="550" y="150" font-family="Segoe UI, Arial, sans-serif" font-size="72" font-weight="800" fill="url(#textGrad)" text-anchor="middle">PIXPDF STUDIO</text>
+
+  <text x="550" y="190" font-family="JetBrains Mono, monospace" font-size="18" letter-spacing="3" fill="#B7B8C4" text-anchor="middle">SMART IMAGE COMPRESSION // PDF CREATOR</text>
+
+  <g filter="url(#glow)">
+    <rect x="410" y="210" width="280" height="2" fill="url(#textGrad)"/>
+  </g>
+</svg>
