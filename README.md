@@ -399,10 +399,10 @@ git push origin feature/your-feature-name
 </a>
 </td>
 <td align="center">
-<a href="https://github.com/nikifarzami">
+<a href="https://github.com/nikifarzami" style="text-decoration:none">
 <img src="https://github.com/nikifarzami.png" width="100" style="border-radius:50%;border:2px solid #FF00E5"/><br/>
 <b>Niki</b><br/>
-<sub>ui / systems</sub>
+<sub style="text-decoration:none">ui / systems</sub>
 </a>
 </td>
 </tr>
