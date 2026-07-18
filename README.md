@@ -394,15 +394,13 @@ git push origin feature/your-feature-name
 <td align="center">
 <a href="https://github.com/7Na7iD7">
 <img src="https://github.com/7Na7iD7.png" width="100" style="border-radius:50%;border:2px solid #00F0FF"/><br/>
-<b>Na7iD</b><br/>
-<sub>core / engine</sub>
+<b>Na7iD</b>
 </a>
 </td>
 <td align="center">
 <a href="https://github.com/nikifarzami" style="text-decoration:none">
 <img src="https://github.com/nikifarzami.png" width="100" style="border-radius:50%;border:2px solid #FF00E5"/><br/>
-<b>Niki</b><br/>
-<sub style="text-decoration:none">ui / systems</sub>
+<b>Niki</b>
 </a>
 </td>
 </tr>
