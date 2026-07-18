@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Tuple
 
 
 @dataclass
@@ -18,6 +18,7 @@ class ImageItem:
     grayscale: bool = False
     flipped_h: bool = False
     flipped_v: bool = False
+    crop_box: Optional[Tuple[int, int, int, int]] = None
 
     @property
     def name(self) -> str:
@@ -28,3 +29,8 @@ class ImageItem:
         if self.original_size == 0 or self.compressed_size == 0:
             return 0.0
         return round((1 - (self.compressed_size / self.original_size)) * 100, 1)
+
+    @property
+    def is_cropped(self) -> bool:
+        return self.crop_box is not None
+

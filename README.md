@@ -343,8 +343,8 @@ PixPDFStudio/
 + [DONE]     full PDF layout builder with grid support
 + [DONE]     metadata editing + password encryption
 + [DONE]     dark / light neon-accented theme
-! [PENDING]  interactive crop tool with live preview
-! [PENDING]  live multi-page PDF preview before export
++ [DONE]     interactive crop tool with live preview
++ [DONE]     live multi-page PDF preview before export
 ! [PENDING]  AVIF / HEIC input support
 ! [PENDING]  Persian/RTL UI language toggle
 ```

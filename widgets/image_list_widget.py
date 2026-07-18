@@ -34,6 +34,8 @@ class ImageRowWidget(QWidget):
         details = f"{item.width}x{item.height} · {item.format} · {format_size(item.original_size)}"
         if item.compressed_size:
             details += f"  →  {format_size(item.compressed_size)} ({item.reduction_percent}% کاهش)"
+        if item.is_cropped:
+            details += "  ·  ✂ برش‌خورده"
 
         details_label = QLabel(details)
         details_label.setObjectName("SubtitleLabel")

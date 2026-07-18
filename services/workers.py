@@ -12,6 +12,7 @@ class WorkerSignals(QObject):
     finished = Signal()
     error = Signal(str)
     pdf_finished = Signal(str)
+    preview_ready = Signal(list)
 
 
 class CompressionWorker(QRunnable):
@@ -69,5 +70,22 @@ class PdfBuildWorker(QRunnable):
             )
             MetadataService().apply(output_path, self.settings)
             self.signals.pdf_finished.emit(output_path)
+        except Exception as e:
+            self.signals.error.emit(str(e))
+
+
+class PreviewWorker(QRunnable):
+    def __init__(self, items: list[ImageItem], settings: PdfSettings):
+        super().__init__()
+        self.items = items
+        self.settings = settings
+        self.signals = WorkerSignals()
+
+    @Slot()
+    def run(self):
+        try:
+            builder = PdfBuilder()
+            pages = builder.generate_preview_pages(self.items, self.settings)
+            self.signals.preview_ready.emit(pages)
         except Exception as e:
             self.signals.error.emit(str(e))

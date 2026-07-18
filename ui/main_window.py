@@ -12,13 +12,15 @@ from models.settings_model import AppSettings
 from models.image_item import ImageItem
 from services.image_loader import ImageLoader
 from services.settings_service import SettingsService
-from services.workers import CompressionWorker, PdfBuildWorker
+from services.workers import CompressionWorker, PdfBuildWorker, PreviewWorker
 from widgets.drop_zone import DropZone
 from widgets.image_list_widget import ImageListWidget
 from widgets.compression_panel import CompressionPanel
 from widgets.pdf_settings_panel import PdfSettingsPanel
 from widgets.status_panel import StatusPanel
 from widgets.gradient_label import GradientLabel
+from widgets.crop_dialog import CropDialog
+from widgets.preview_dialog import PdfPreviewDialog
 from ui.theme import DARK_QSS, LIGHT_QSS
 from utils.logger import get_logger
 
@@ -49,6 +51,7 @@ class MainWindow(QMainWindow):
         self.thread_pool.setMaxThreadCount(max(2, os.cpu_count() or 4))
 
         self.active_compression_worker = None
+        self._active_workers = []
 
         self._build_ui()
         self._apply_theme(self.app_settings.theme)
@@ -154,11 +157,15 @@ class MainWindow(QMainWindow):
         select_folder_btn = QPushButton("انتخاب پوشه")
         select_folder_btn.setObjectName("SecondaryButton")
         select_folder_btn.clicked.connect(self._browse_folder)
+        crop_btn = QPushButton("✂ برش تصویر")
+        crop_btn.setObjectName("SecondaryButton")
+        crop_btn.clicked.connect(self._open_crop_dialog)
         clear_btn = QPushButton("حذف همه")
         clear_btn.setObjectName("SecondaryButton")
         clear_btn.clicked.connect(self._clear_all)
         action_row.addWidget(select_files_btn)
         action_row.addWidget(select_folder_btn)
+        action_row.addWidget(crop_btn)
         action_row.addWidget(clear_btn)
         layout.addLayout(action_row)
 
@@ -235,6 +242,17 @@ class MainWindow(QMainWindow):
         self.image_list.clear()
         self.status_panel.set_status("آماده")
 
+    def _open_crop_dialog(self):
+        selected = self.image_list.selected_items_data()
+        if not selected:
+            QMessageBox.information(self, "برش تصویر", "ابتدا یک تصویر را از لیست انتخاب کنید.")
+            return
+        item = selected[0]
+        dialog = CropDialog(item, self)
+        if dialog.exec():
+            item.crop_box = dialog.result_box
+            self.image_list.update_item_widget(item)
+
     def _start_pipeline(self):
         items = self.image_list.all_items()
         if not items:
@@ -250,17 +268,35 @@ class MainWindow(QMainWindow):
         worker.signals.finished.connect(lambda: self._on_compression_finished(items))
         worker.signals.error.connect(self._on_error)
         self.active_compression_worker = worker
+        self._active_workers.append(worker)
         self.thread_pool.start(worker)
 
     def _on_item_compressed(self, item: ImageItem):
         self.image_list.update_item_widget(item)
 
     def _on_compression_finished(self, items: list[ImageItem]):
-        self.status_panel.set_status("در حال ساخت PDF...")
+        self.status_panel.set_status("در حال آماده‌سازی پیش‌نمایش...")
+        worker = PreviewWorker(items, self.app_settings.pdf)
+        worker.signals.preview_ready.connect(lambda pages: self._on_preview_ready(items, pages))
+        worker.signals.error.connect(self._on_error)
+        self._active_workers.append(worker)
+        self.thread_pool.start(worker)
+
+    def _on_preview_ready(self, items: list[ImageItem], pages: list):
+        self.status_panel.set_status("پیش‌نمایش آماده است")
+        dialog = PdfPreviewDialog(pages, self)
+        if dialog.exec() and dialog.proceed:
+            self._build_final_pdf(items)
+        else:
+            self.status_panel.set_status("ساخت PDF لغو شد")
+
+    def _build_final_pdf(self, items: list[ImageItem]):
+        self.status_panel.set_status("در حال ساخت PDF نهایی...")
         worker = PdfBuildWorker(items, self.app_settings.pdf)
         worker.signals.progress.connect(self.status_panel.set_progress)
         worker.signals.pdf_finished.connect(self._on_pdf_finished)
         worker.signals.error.connect(self._on_error)
+        self._active_workers.append(worker)
         self.thread_pool.start(worker)
 
     def _on_pdf_finished(self, output_path: str):

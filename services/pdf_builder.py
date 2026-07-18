@@ -23,6 +23,35 @@ class PdfBuilder:
         progress_callback: Optional[Callable[[int, int], None]] = None,
     ) -> str:
         output_path = os.path.join(settings.output_dir, settings.output_name)
+        dpi = self._quality_to_dpi(settings.pdf_quality)
+        pages = self.generate_pages(items, settings, dpi, progress_callback)
+
+        if not pages:
+            raise ValueError("No images to build PDF")
+
+        os.makedirs(settings.output_dir, exist_ok=True)
+        first, rest = pages[0], pages[1:]
+        first.save(output_path, "PDF", save_all=True, append_images=rest, resolution=dpi)
+        return output_path
+
+    def generate_preview_pages(
+        self,
+        items: List[ImageItem],
+        settings: PdfSettings,
+        max_pages: Optional[int] = None,
+    ) -> List[Image.Image]:
+        pages = self.generate_pages(items, settings, dpi=96, progress_callback=None)
+        if max_pages is not None:
+            return pages[:max_pages]
+        return pages
+
+    def generate_pages(
+        self,
+        items: List[ImageItem],
+        settings: PdfSettings,
+        dpi: int,
+        progress_callback: Optional[Callable[[int, int], None]] = None,
+    ) -> List[Image.Image]:
         page_w_mm, page_h_mm = self._resolve_page_size(items, settings)
 
         if settings.orientation == "Landscape" and page_w_mm < page_h_mm:
@@ -30,7 +59,6 @@ class PdfBuilder:
         elif settings.orientation == "Portrait" and page_w_mm > page_h_mm:
             page_w_mm, page_h_mm = page_h_mm, page_w_mm
 
-        dpi = self._quality_to_dpi(settings.pdf_quality)
         page_w_px = int(page_w_mm / 25.4 * dpi)
         page_h_px = int(page_h_mm / 25.4 * dpi)
         margin_px = int(settings.margin_mm / 25.4 * dpi)
@@ -47,8 +75,8 @@ class PdfBuilder:
             page = Image.new("RGB", (page_w_px, page_h_px), "white")
             usable_w = page_w_px - 2 * margin_px - (cols - 1) * spacing_px
             usable_h = page_h_px - 2 * margin_px - (rows - 1) * spacing_px
-            cell_w = usable_w // cols
-            cell_h = usable_h // rows
+            cell_w = max(1, usable_w // cols)
+            cell_h = max(1, usable_h // rows)
 
             for i, item in enumerate(chunk):
                 r = i // cols
@@ -68,13 +96,7 @@ class PdfBuilder:
 
             pages.append(page)
 
-        if not pages:
-            raise ValueError("No images to build PDF")
-
-        os.makedirs(settings.output_dir, exist_ok=True)
-        first, rest = pages[0], pages[1:]
-        first.save(output_path, "PDF", save_all=True, append_images=rest, resolution=dpi)
-        return output_path
+        return pages
 
     def _resolve_page_size(self, items: List[ImageItem], settings: PdfSettings):
         if settings.page_size == "Original Size" and items:
@@ -98,11 +120,6 @@ class PdfBuilder:
             return im.resize((cell_w, cell_h), Image.LANCZOS)
 
         ratio = min(cell_w / im.width, cell_h / im.height)
-        if alignment == "Fit":
-            new_w = max(int(im.width * ratio), 1)
-            new_h = max(int(im.height * ratio), 1)
-            return im.resize((new_w, new_h), Image.LANCZOS)
-
         new_w = max(int(im.width * ratio), 1)
         new_h = max(int(im.height * ratio), 1)
         return im.resize((new_w, new_h), Image.LANCZOS)

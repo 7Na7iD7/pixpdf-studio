@@ -21,6 +21,14 @@ class Compressor:
         with Image.open(item.path) as img:
             img = ImageOps.exif_transpose(img)
 
+            if item.crop_box:
+                left, top, right, bottom = item.crop_box
+                left = max(0, min(left, img.width - 1))
+                top = max(0, min(top, img.height - 1))
+                right = max(left + 1, min(right, img.width))
+                bottom = max(top + 1, min(bottom, img.height))
+                img = img.crop((left, top, right, bottom))
+
             if item.rotation:
                 img = img.rotate(-item.rotation, expand=True)
             if item.flipped_h:
